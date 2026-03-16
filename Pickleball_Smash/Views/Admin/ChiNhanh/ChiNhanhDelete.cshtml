@@ -1,0 +1,100 @@
+@model Pickleball_Smash.Models.ChiNhanh
+
+@{
+    ViewData["Title"] = "Xóa Chi Nhánh";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="h3 mb-4 text-dark">
+                <i class="fas fa-trash-alt"></i> Xóa Chi Nhánh
+            </h1>
+
+            <div class="card shadow border-danger mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="m-0 font-weight-bold">Xác Nhận Xóa Chi Nhánh</h6>
+                </div>
+                <div class="card-body">
+                    <div id="messages"></div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Cảnh báo!</strong> Bạn chắc chắn muốn xóa chi nhánh này? Hành động này không thể hoàn tác!
+                    </div>
+
+                    <div class="info-box mb-4">
+                        <p><strong>Tên Chi Nhánh:</strong> @Html.DisplayFor(model => model.TenChiNhanh)</p>
+                        <p><strong>Địa Chỉ:</strong> @Html.DisplayFor(model => model.DiaChi)</p>
+                        <p><strong>Số Điện Thoại:</strong> @Html.DisplayFor(model => model.SDT_LienHe)</p>
+                    </div>
+
+                    <form id="deleteForm">
+                        <input type="hidden" id="ChiNhanhID" value="@Model.ChiNhanhID" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-danger btn-block">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-action="ChiNhanhIndex" class="btn btn-secondary btn-block">
+                                    <i class="fas fa-times"></i> Hủy
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .info-box {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #dc3545;
+    }
+    .info-box p {
+        margin-bottom: 10px;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(function() {
+            $('#deleteForm').on('submit', function (e) {
+                e.preventDefault();
+
+                if (!confirm('Bạn chắc chắn muốn xóa chi nhánh này?')) {
+                    return false;
+                }
+
+                var id = $('#ChiNhanhID').val();
+
+                $.ajax({
+                    url: '@Url.Action("ChiNhanhDeleteAjax","Admin")/' + id,
+                    method: 'POST',
+                    success: function (resp) {
+                        if (resp.success) {
+                            $('#messages').html('<div class="alert alert-success"><i class="fas fa-check-circle"></i> ' + resp.message + '</div>');
+                            setTimeout(function() {
+                                window.location.href = '@Url.Action("ChiNhanhIndex","Admin")';
+                            }, 1500);
+                        } else {
+                            $('#messages').html('<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ' + resp.error + '</div>');
+                        }
+                    },
+                    error: function () {
+                        $('#messages').html('<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Có lỗi xảy ra khi gửi yêu cầu.</div>');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
