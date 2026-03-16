@@ -1,0 +1,38 @@
+@model Pickleball_Smash.Models.SanPickleball
+
+@{
+    ViewData["Title"] = "Thêm Sân Pickleball";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="h3 mb-4 text-dark">Thêm Sân Pickleball</h1>
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white"><h6 class="m-0">Thông Tin Sân</h6></div>
+                <div class="card-body">
+                    <form asp-controller="AdminSan" asp-action="Create" method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Chi Nhánh</label>
+                            <select asp-for="ChiNhanhID" class="form-select" asp-items="@(new SelectList(ViewBag.ChiNhanhs, "ChiNhanhID", "TenChiNhanh"))">
+                                <option value="">-- chọn --</option>
+                            </select>
+                        </div>
+
+                        @{ await Html.RenderPartialAsync("~/Views/Admin/San/_SanFormPartial.cshtml", Model); }
+
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a asp-controller="AdminSan" asp-action="Index" class="btn btn-secondary">Hủy</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

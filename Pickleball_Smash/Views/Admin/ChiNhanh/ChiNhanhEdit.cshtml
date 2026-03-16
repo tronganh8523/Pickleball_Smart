@@ -1,0 +1,105 @@
+@model Pickleball_Smash.Models.ChiNhanh
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Chi Nhánh";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="h3 mb-4 text-dark">
+                <i class="fas fa-edit"></i> Chỉnh Sửa Chi Nhánh
+            </h1>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Cập Nhật Thông Tin Chi Nhánh</h6>
+                </div>
+                <div class="card-body">
+                    <div id="messages"></div>
+                    <form id="editForm">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                        <input type="hidden" id="ChiNhanhID" asp-for="ChiNhanhID" />
+
+                        <div class="form-group mb-3">
+                            <label for="TenChiNhanh" class="form-label"><strong>Tên Chi Nhánh <span class="text-danger">*</span></strong></label>
+                            <input type="text" class="form-control" 
+                                   id="TenChiNhanh" asp-for="TenChiNhanh" placeholder="Nhập tên chi nhánh (3-100 ký tự)" required>
+                            <span asp-validation-for="TenChiNhanh" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="DiaChi" class="form-label"><strong>Địa Chỉ</strong></label>
+                            <input type="text" class="form-control" id="DiaChi" asp-for="DiaChi">
+                            <span asp-validation-for="DiaChi" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="SDT_LienHe" class="form-label"><strong>Số Điện Thoại Liên Hệ <span class="text-danger">*</span></strong></label>
+                            <input type="tel" class="form-control" id="SDT_LienHe" asp-for="SDT_LienHe" placeholder="Nhập số điện thoại (0xxxxxxxxx, 10-11 số)" required>
+                            <small class="form-text text-muted">Bắt đầu bằng 0, có độ dài 10-11 số</small>
+                            <span asp-validation-for="SDT_LienHe" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-save"></i> Lưu Thay Đổi
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-action="ChiNhanhIndex" class="btn btn-secondary btn-block">
+                                    <i class="fas fa-times"></i> Hủy
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(function() {
+            $('#editForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var id = $('#ChiNhanhID').val();
+                var payload = {
+                    ChiNhanhID: id,
+                    TenChiNhanh: $('#TenChiNhanh').val(),
+                    DiaChi: $('#DiaChi').val(),
+                    SDT_LienHe: $('#SDT_LienHe').val()
+                };
+
+                $.ajax({
+                    url: '@Url.Action("ChiNhanhEditAjax","Admin")/' + id,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    success: function (resp) {
+                        if (resp.success) {
+                            $('#messages').html('<div class="alert alert-success"><i class="fas fa-check-circle"></i> ' + resp.message + '</div>');
+                            setTimeout(function() {
+                                window.location.href = '@Url.Action("ChiNhanhIndex","Admin")';
+                            }, 1500);
+                        } else {
+                            var message = resp.errors ? resp.errors.join('<br>') : resp.error;
+                            $('#messages').html('<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ' + message + '</div>');
+                        }
+                    },
+                    error: function () {
+                        $('#messages').html('<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Có lỗi xảy ra khi gửi yêu cầu.</div>');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
