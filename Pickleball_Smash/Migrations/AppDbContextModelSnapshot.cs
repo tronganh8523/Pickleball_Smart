@@ -46,7 +46,7 @@ namespace Pickleball_Smash.Migrations
 
                     b.HasKey("ChiNhanhID");
 
-                    b.ToTable("ChiNhanh", (string)null);
+                    b.ToTable("CHI_NHANH", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.ChiTietDichVu", b =>
@@ -79,7 +79,7 @@ namespace Pickleball_Smash.Migrations
 
                     b.HasIndex("DonDatSanID");
 
-                    b.ToTable("ChiTietDichVu", (string)null);
+                    b.ToTable("CHI_TIET_DICH_VU", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.DanhGia", b =>
@@ -114,7 +114,10 @@ namespace Pickleball_Smash.Migrations
 
                     b.HasIndex("SanPickleballSanID");
 
-                    b.ToTable("DanhGia", (string)null);
+                    b.ToTable("DANH_GIA", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_DANH_GIA_SoSao", "SoSao >= 1 AND SoSao <= 5");
+                        });
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.DichVuPhuTro", b =>
@@ -132,16 +135,13 @@ namespace Pickleball_Smash.Migrations
                     b.Property<string>("LoaiDichVu")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SoLuongTon")
-                        .HasColumnType("int");
-
                     b.Property<string>("TenDichVu")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DichVuID");
 
-                    b.ToTable("DichVuPhuTro", (string)null);
+                    b.ToTable("DICH_VU_PHU_TRO", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.DonDatSan", b =>
@@ -152,12 +152,8 @@ namespace Pickleball_Smash.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DonDatSanID"));
 
-                    b.Property<string>("KhungGio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("NgayChoi")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("NgayChoi")
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
@@ -170,6 +166,12 @@ namespace Pickleball_Smash.Migrations
 
                     b.Property<int?>("SanPickleballSanID")
                         .HasColumnType("int");
+
+                    b.Property<TimeOnly>("ThoiGianBatDau")
+                        .HasColumnType("time");
+
+                    b.Property<TimeOnly>("ThoiGianKetThuc")
+                        .HasColumnType("time");
 
                     b.Property<decimal?>("TongTien")
                         .HasPrecision(18, 2)
@@ -184,37 +186,7 @@ namespace Pickleball_Smash.Migrations
 
                     b.HasIndex("SanPickleballSanID");
 
-                    b.ToTable("DonDatSan", (string)null);
-                });
-
-            modelBuilder.Entity("Pickleball_Smash.Models.GhepCapAI", b =>
-                {
-                    b.Property<int>("GhepCapID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GhepCapID"));
-
-                    b.Property<string>("KieuGhep")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("NgayTao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("NguoiDungID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TrangThai")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrinhDo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("GhepCapID");
-
-                    b.HasIndex("NguoiDungID");
-
-                    b.ToTable("GhepCapAI", (string)null);
+                    b.ToTable("DON_DAT_SAN", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.LichSuChat", b =>
@@ -241,7 +213,7 @@ namespace Pickleball_Smash.Migrations
 
                     b.HasIndex("NguoiDungID");
 
-                    b.ToTable("LichSuChat", (string)null);
+                    b.ToTable("LICH_SU_CHAT", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.NguoiDung", b =>
@@ -284,7 +256,7 @@ namespace Pickleball_Smash.Migrations
                     b.HasIndex("TenDangNhap")
                         .IsUnique();
 
-                    b.ToTable("NguoiDung", (string)null);
+                    b.ToTable("NGUOI_DUNG", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.SanPickleball", b =>
@@ -299,8 +271,8 @@ namespace Pickleball_Smash.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("GiaCoBan")
-                        .HasPrecision(18)
-                        .HasColumnType("decimal(18,0)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("LoaiSan")
                         .IsRequired()
@@ -325,13 +297,13 @@ namespace Pickleball_Smash.Migrations
                     b.HasIndex("TenSan", "ChiNhanhID")
                         .IsUnique();
 
-                    b.ToTable("SanPickleball", null, t =>
+                    b.ToTable("SAN_PICKLEBALL", null, t =>
                         {
-                            t.HasCheckConstraint("CK_SanPickleball_GiaCoBan", "GiaCoBan >= 0");
+                            t.HasCheckConstraint("CK_SAN_PICKLEBALL_GiaCoBan", "GiaCoBan >= 0");
 
-                            t.HasCheckConstraint("CK_SanPickleball_LoaiSan", "LoaiSan IN (N'Trong nhà', N'Ngoài trời')");
+                            t.HasCheckConstraint("CK_SAN_PICKLEBALL_LoaiSan", "LoaiSan IN (N'Trong nhà', N'Ngoài trời')");
 
-                            t.HasCheckConstraint("CK_SanPickleball_TrangThai", "TrangThai IN (N'Mở', N'Đóng')");
+                            t.HasCheckConstraint("CK_SAN_PICKLEBALL_TrangThai", "TrangThai IN (N'Mở', N'Đóng')");
                         });
                 });
 
@@ -366,7 +338,7 @@ namespace Pickleball_Smash.Migrations
 
                     b.HasIndex("DonDatSanID");
 
-                    b.ToTable("ThanhToan", (string)null);
+                    b.ToTable("THANH_TOAN", (string)null);
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.ChiTietDichVu", b =>
@@ -412,15 +384,6 @@ namespace Pickleball_Smash.Migrations
                     b.Navigation("NguoiDung");
 
                     b.Navigation("SanPickleball");
-                });
-
-            modelBuilder.Entity("Pickleball_Smash.Models.GhepCapAI", b =>
-                {
-                    b.HasOne("Pickleball_Smash.Models.NguoiDung", "NguoiDung")
-                        .WithMany("GhepCapAIs")
-                        .HasForeignKey("NguoiDungID");
-
-                    b.Navigation("NguoiDung");
                 });
 
             modelBuilder.Entity("Pickleball_Smash.Models.LichSuChat", b =>
@@ -475,8 +438,6 @@ namespace Pickleball_Smash.Migrations
 
                     b.Navigation("DonDatSans");
 
-                    b.Navigation("GhepCapAIs");
-
                     b.Navigation("LichSuChats");
                 });
 
@@ -490,4 +451,3 @@ namespace Pickleball_Smash.Migrations
         }
     }
 }
-

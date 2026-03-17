@@ -9,7 +9,6 @@ namespace Pickleball_Smash.Data
         {
         }
 
-        // Use singular table names and DbSet properties
         public DbSet<NguoiDung> NguoiDung { get; set; }
         public DbSet<ChiNhanh> ChiNhanh { get; set; }
         public DbSet<SanPickleball> SanPickleball { get; set; }
@@ -18,103 +17,79 @@ namespace Pickleball_Smash.Data
         public DbSet<ChiTietDichVu> ChiTietDichVu { get; set; }
         public DbSet<ThanhToan> ThanhToan { get; set; }
         public DbSet<DanhGia> DanhGia { get; set; }
-        public DbSet<GhepCapAI> GhepCapAI { get; set; }
         public DbSet<LichSuChat> LichSuChat { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Cấu hình NguoiDung
+            // NGUOI_DUNG
+            modelBuilder.Entity<NguoiDung>().HasKey(e => e.NguoiDungID);
+            modelBuilder.Entity<NguoiDung>().ToTable("NGUOI_DUNG");
             modelBuilder.Entity<NguoiDung>()
                 .HasIndex(n => n.TenDangNhap)
                 .IsUnique();
 
-            // Cấu hình ràng buộc SoSao trong DanhGia
-            modelBuilder.Entity<DanhGia>()
-                .Property(d => d.SoSao)
-                .HasColumnType("int");
-
-            // Configure decimal precision to avoid truncation warnings
-            modelBuilder.Entity<ChiTietDichVu>()
-                .Property(e => e.ThanhTien)
-                .HasPrecision(18,2);
-
-            modelBuilder.Entity<DichVuPhuTro>()
-                .Property(e => e.Gia)
-                .HasPrecision(18,2);
-
-            modelBuilder.Entity<DonDatSan>()
-                .Property(e => e.TongTien)
-                .HasPrecision(18,2);
-
-            modelBuilder.Entity<ThanhToan>()
-                .Property(e => e.SoTien)
-                .HasPrecision(18,2);
-
-            // Cấu hình All Primary Keys and table names
-            modelBuilder.Entity<NguoiDung>().HasKey(e => e.NguoiDungID);
-            modelBuilder.Entity<NguoiDung>().ToTable("NguoiDung");
-
+            // CHI_NHANH
             modelBuilder.Entity<ChiNhanh>().HasKey(e => e.ChiNhanhID);
-            modelBuilder.Entity<ChiNhanh>().ToTable("ChiNhanh");
+            modelBuilder.Entity<ChiNhanh>().ToTable("CHI_NHANH");
 
+            // SAN_PICKLEBALL
             modelBuilder.Entity<SanPickleball>().HasKey(e => e.SanID);
-            modelBuilder.Entity<SanPickleball>().ToTable("SanPickleball", t => {
-                t.HasCheckConstraint("CK_SanPickleball_LoaiSan", "LoaiSan IN (N'Trong nhà', N'Ngoài trời')");
-                t.HasCheckConstraint("CK_SanPickleball_TrangThai", "TrangThai IN (N'Mở', N'Đóng')");
-                t.HasCheckConstraint("CK_SanPickleball_GiaCoBan", "GiaCoBan >= 0");
+            modelBuilder.Entity<SanPickleball>().ToTable("SAN_PICKLEBALL", t =>
+            {
+                t.HasCheckConstraint("CK_SAN_PICKLEBALL_LoaiSan", "LoaiSan IN (N'Trong nhà', N'Ngoài trời')");
+                t.HasCheckConstraint("CK_SAN_PICKLEBALL_TrangThai", "TrangThai IN (N'Mở', N'Đóng')");
+                t.HasCheckConstraint("CK_SAN_PICKLEBALL_GiaCoBan", "GiaCoBan >= 0");
             });
             modelBuilder.Entity<SanPickleball>()
                 .HasIndex(s => new { s.TenSan, s.ChiNhanhID })
-                .IsUnique(); // unique per branch
-
-            // set column constraints
+                .IsUnique();
             modelBuilder.Entity<SanPickleball>()
-                .Property(e => e.TenSan)
-                .IsRequired()
-                .HasColumnType("NVARCHAR(100)");
-
+                .Property(e => e.TenSan).IsRequired().HasColumnType("NVARCHAR(100)");
             modelBuilder.Entity<SanPickleball>()
-                .Property(e => e.LoaiSan)
-                .IsRequired()
-                .HasColumnType("NVARCHAR(50)");
-
+                .Property(e => e.LoaiSan).IsRequired().HasColumnType("NVARCHAR(50)");
             modelBuilder.Entity<SanPickleball>()
-                .Property(e => e.TrangThai)
-                .IsRequired()
-                .HasColumnType("NVARCHAR(50)");
-
-            // decimal precision for price fields
+                .Property(e => e.TrangThai).IsRequired().HasColumnType("NVARCHAR(50)");
             modelBuilder.Entity<SanPickleball>()
-                .Property(e => e.GiaCoBan)
-                .IsRequired()
-                .HasPrecision(18,0);
-
+                .Property(e => e.GiaCoBan).IsRequired().HasPrecision(18, 2);
             modelBuilder.Entity<SanPickleball>()
-                .Property(e => e.ChiNhanhID)
-                .IsRequired();
+                .Property(e => e.ChiNhanhID).IsRequired();
 
-            modelBuilder.Entity<DonDatSan>().HasKey(e => e.DonDatSanID);
-            modelBuilder.Entity<DonDatSan>().ToTable("DonDatSan");
-
+            // DICH_VU_PHU_TRO
             modelBuilder.Entity<DichVuPhuTro>().HasKey(e => e.DichVuID);
-            modelBuilder.Entity<DichVuPhuTro>().ToTable("DichVuPhuTro");
+            modelBuilder.Entity<DichVuPhuTro>().ToTable("DICH_VU_PHU_TRO");
+            modelBuilder.Entity<DichVuPhuTro>()
+                .Property(e => e.Gia).HasPrecision(18, 2);
 
+            // DON_DAT_SAN
+            modelBuilder.Entity<DonDatSan>().HasKey(e => e.DonDatSanID);
+            modelBuilder.Entity<DonDatSan>().ToTable("DON_DAT_SAN");
+            modelBuilder.Entity<DonDatSan>()
+                .Property(e => e.TongTien).HasPrecision(18, 2);
+
+            // CHI_TIET_DICH_VU
             modelBuilder.Entity<ChiTietDichVu>().HasKey(e => e.ChiTietDichVuID);
-            modelBuilder.Entity<ChiTietDichVu>().ToTable("ChiTietDichVu");
+            modelBuilder.Entity<ChiTietDichVu>().ToTable("CHI_TIET_DICH_VU");
+            modelBuilder.Entity<ChiTietDichVu>()
+                .Property(e => e.ThanhTien).HasPrecision(18, 2);
 
+            // THANH_TOAN
             modelBuilder.Entity<ThanhToan>().HasKey(e => e.ThanhToanID);
-            modelBuilder.Entity<ThanhToan>().ToTable("ThanhToan");
+            modelBuilder.Entity<ThanhToan>().ToTable("THANH_TOAN");
+            modelBuilder.Entity<ThanhToan>()
+                .Property(e => e.SoTien).HasPrecision(18, 2);
 
+            // DANH_GIA
             modelBuilder.Entity<DanhGia>().HasKey(e => e.DanhGiaID);
-            modelBuilder.Entity<DanhGia>().ToTable("DanhGia");
+            modelBuilder.Entity<DanhGia>().ToTable("DANH_GIA", t =>
+                t.HasCheckConstraint("CK_DANH_GIA_SoSao", "SoSao >= 1 AND SoSao <= 5"));
+            modelBuilder.Entity<DanhGia>()
+                .Property(d => d.SoSao).HasColumnType("int");
 
-            modelBuilder.Entity<GhepCapAI>().HasKey(e => e.GhepCapID);
-            modelBuilder.Entity<GhepCapAI>().ToTable("GhepCapAI");
-
+            // LICH_SU_CHAT
             modelBuilder.Entity<LichSuChat>().HasKey(e => e.ChatID);
-            modelBuilder.Entity<LichSuChat>().ToTable("LichSuChat");
+            modelBuilder.Entity<LichSuChat>().ToTable("LICH_SU_CHAT");
         }
     }
 }

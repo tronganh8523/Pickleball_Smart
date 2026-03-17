@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Pickleball_Smash.Migrations
 {
     /// <inheritdoc />
-    public partial class TaoCoSoDuLieuBanDau : Migration
+    public partial class InitSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ChiNhanh",
+                name: "CHI_NHANH",
                 columns: table => new
                 {
                     ChiNhanhID = table.Column<int>(type: "int", nullable: false)
@@ -23,27 +23,26 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChiNhanh", x => x.ChiNhanhID);
+                    table.PrimaryKey("PK_CHI_NHANH", x => x.ChiNhanhID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DichVuPhuTro",
+                name: "DICH_VU_PHU_TRO",
                 columns: table => new
                 {
                     DichVuID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TenDichVu = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LoaiDichVu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gia = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    SoLuongTon = table.Column<int>(type: "int", nullable: true)
+                    Gia = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DichVuPhuTro", x => x.DichVuID);
+                    table.PrimaryKey("PK_DICH_VU_PHU_TRO", x => x.DichVuID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NguoiDung",
+                name: "NGUOI_DUNG",
                 columns: table => new
                 {
                     NguoiDungID = table.Column<int>(type: "int", nullable: false)
@@ -59,56 +58,38 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NguoiDung", x => x.NguoiDungID);
+                    table.PrimaryKey("PK_NGUOI_DUNG", x => x.NguoiDungID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SanPickleball",
+                name: "SAN_PICKLEBALL",
                 columns: table => new
                 {
                     SanID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TenSan = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LoaiSan = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenSan = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false),
+                    LoaiSan = table.Column<string>(type: "NVARCHAR(50)", nullable: false),
                     MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GiaCoBan = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChiNhanhID = table.Column<int>(type: "int", nullable: true)
+                    GiaCoBan = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    TrangThai = table.Column<string>(type: "NVARCHAR(50)", nullable: false),
+                    ChiNhanhID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SanPickleball", x => x.SanID);
+                    table.PrimaryKey("PK_SAN_PICKLEBALL", x => x.SanID);
+                    table.CheckConstraint("CK_SAN_PICKLEBALL_GiaCoBan", "GiaCoBan >= 0");
+                    table.CheckConstraint("CK_SAN_PICKLEBALL_LoaiSan", "LoaiSan IN (N'Trong nhà', N'Ngoài trời')");
+                    table.CheckConstraint("CK_SAN_PICKLEBALL_TrangThai", "TrangThai IN (N'Mở', N'Đóng')");
                     table.ForeignKey(
-                        name: "FK_SanPickleball_ChiNhanh_ChiNhanhID",
+                        name: "FK_SAN_PICKLEBALL_CHI_NHANH_ChiNhanhID",
                         column: x => x.ChiNhanhID,
-                        principalTable: "ChiNhanh",
-                        principalColumn: "ChiNhanhID");
+                        principalTable: "CHI_NHANH",
+                        principalColumn: "ChiNhanhID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GhepCapAI",
-                columns: table => new
-                {
-                    GhepCapID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NguoiDungID = table.Column<int>(type: "int", nullable: true),
-                    TrinhDo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    KieuGhep = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrangThai = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GhepCapAI", x => x.GhepCapID);
-                    table.ForeignKey(
-                        name: "FK_GhepCapAI_NguoiDung_NguoiDungID",
-                        column: x => x.NguoiDungID,
-                        principalTable: "NguoiDung",
-                        principalColumn: "NguoiDungID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LichSuChat",
+                name: "LICH_SU_CHAT",
                 columns: table => new
                 {
                     ChatID = table.Column<int>(type: "int", nullable: false)
@@ -120,16 +101,16 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LichSuChat", x => x.ChatID);
+                    table.PrimaryKey("PK_LICH_SU_CHAT", x => x.ChatID);
                     table.ForeignKey(
-                        name: "FK_LichSuChat_NguoiDung_NguoiDungID",
+                        name: "FK_LICH_SU_CHAT_NGUOI_DUNG_NguoiDungID",
                         column: x => x.NguoiDungID,
-                        principalTable: "NguoiDung",
+                        principalTable: "NGUOI_DUNG",
                         principalColumn: "NguoiDungID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "DanhGia",
+                name: "DANH_GIA",
                 columns: table => new
                 {
                     DanhGiaID = table.Column<int>(type: "int", nullable: false)
@@ -143,29 +124,31 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DanhGia", x => x.DanhGiaID);
+                    table.PrimaryKey("PK_DANH_GIA", x => x.DanhGiaID);
+                    table.CheckConstraint("CK_DANH_GIA_SoSao", "SoSao >= 1 AND SoSao <= 5");
                     table.ForeignKey(
-                        name: "FK_DanhGia_NguoiDung_NguoiDungID",
+                        name: "FK_DANH_GIA_NGUOI_DUNG_NguoiDungID",
                         column: x => x.NguoiDungID,
-                        principalTable: "NguoiDung",
+                        principalTable: "NGUOI_DUNG",
                         principalColumn: "NguoiDungID");
                     table.ForeignKey(
-                        name: "FK_DanhGia_SanPickleball_SanPickleballSanID",
+                        name: "FK_DANH_GIA_SAN_PICKLEBALL_SanPickleballSanID",
                         column: x => x.SanPickleballSanID,
-                        principalTable: "SanPickleball",
+                        principalTable: "SAN_PICKLEBALL",
                         principalColumn: "SanID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "DonDatSan",
+                name: "DON_DAT_SAN",
                 columns: table => new
                 {
                     DonDatSanID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NguoiDungID = table.Column<int>(type: "int", nullable: true),
                     SanID = table.Column<int>(type: "int", nullable: true),
-                    NgayChoi = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    KhungGio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NgayChoi = table.Column<DateOnly>(type: "date", nullable: false),
+                    ThoiGianBatDau = table.Column<TimeOnly>(type: "time", nullable: false),
+                    ThoiGianKetThuc = table.Column<TimeOnly>(type: "time", nullable: false),
                     TongTien = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     TrangThaiDon = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NgayTao = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -173,21 +156,21 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DonDatSan", x => x.DonDatSanID);
+                    table.PrimaryKey("PK_DON_DAT_SAN", x => x.DonDatSanID);
                     table.ForeignKey(
-                        name: "FK_DonDatSan_NguoiDung_NguoiDungID",
+                        name: "FK_DON_DAT_SAN_NGUOI_DUNG_NguoiDungID",
                         column: x => x.NguoiDungID,
-                        principalTable: "NguoiDung",
+                        principalTable: "NGUOI_DUNG",
                         principalColumn: "NguoiDungID");
                     table.ForeignKey(
-                        name: "FK_DonDatSan_SanPickleball_SanPickleballSanID",
+                        name: "FK_DON_DAT_SAN_SAN_PICKLEBALL_SanPickleballSanID",
                         column: x => x.SanPickleballSanID,
-                        principalTable: "SanPickleball",
+                        principalTable: "SAN_PICKLEBALL",
                         principalColumn: "SanID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChiTietDichVu",
+                name: "CHI_TIET_DICH_VU",
                 columns: table => new
                 {
                     ChiTietDichVuID = table.Column<int>(type: "int", nullable: false)
@@ -200,21 +183,21 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChiTietDichVu", x => x.ChiTietDichVuID);
+                    table.PrimaryKey("PK_CHI_TIET_DICH_VU", x => x.ChiTietDichVuID);
                     table.ForeignKey(
-                        name: "FK_ChiTietDichVu_DichVuPhuTro_DichVuPhuTroDichVuID",
+                        name: "FK_CHI_TIET_DICH_VU_DICH_VU_PHU_TRO_DichVuPhuTroDichVuID",
                         column: x => x.DichVuPhuTroDichVuID,
-                        principalTable: "DichVuPhuTro",
+                        principalTable: "DICH_VU_PHU_TRO",
                         principalColumn: "DichVuID");
                     table.ForeignKey(
-                        name: "FK_ChiTietDichVu_DonDatSan_DonDatSanID",
+                        name: "FK_CHI_TIET_DICH_VU_DON_DAT_SAN_DonDatSanID",
                         column: x => x.DonDatSanID,
-                        principalTable: "DonDatSan",
+                        principalTable: "DON_DAT_SAN",
                         principalColumn: "DonDatSanID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "ThanhToan",
+                name: "THANH_TOAN",
                 columns: table => new
                 {
                     ThanhToanID = table.Column<int>(type: "int", nullable: false)
@@ -228,75 +211,69 @@ namespace Pickleball_Smash.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ThanhToan", x => x.ThanhToanID);
+                    table.PrimaryKey("PK_THANH_TOAN", x => x.ThanhToanID);
                     table.ForeignKey(
-                        name: "FK_ThanhToan_DonDatSan_DonDatSanID",
+                        name: "FK_THANH_TOAN_DON_DAT_SAN_DonDatSanID",
                         column: x => x.DonDatSanID,
-                        principalTable: "DonDatSan",
+                        principalTable: "DON_DAT_SAN",
                         principalColumn: "DonDatSanID");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChiTietDichVu_DichVuPhuTroDichVuID",
-                table: "ChiTietDichVu",
+                name: "IX_CHI_TIET_DICH_VU_DichVuPhuTroDichVuID",
+                table: "CHI_TIET_DICH_VU",
                 column: "DichVuPhuTroDichVuID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChiTietDichVu_DonDatSanID",
-                table: "ChiTietDichVu",
+                name: "IX_CHI_TIET_DICH_VU_DonDatSanID",
+                table: "CHI_TIET_DICH_VU",
                 column: "DonDatSanID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DanhGia_NguoiDungID",
-                table: "DanhGia",
+                name: "IX_DANH_GIA_NguoiDungID",
+                table: "DANH_GIA",
                 column: "NguoiDungID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DanhGia_SanPickleballSanID",
-                table: "DanhGia",
+                name: "IX_DANH_GIA_SanPickleballSanID",
+                table: "DANH_GIA",
                 column: "SanPickleballSanID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DonDatSan_NguoiDungID",
-                table: "DonDatSan",
+                name: "IX_DON_DAT_SAN_NguoiDungID",
+                table: "DON_DAT_SAN",
                 column: "NguoiDungID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DonDatSan_SanPickleballSanID",
-                table: "DonDatSan",
+                name: "IX_DON_DAT_SAN_SanPickleballSanID",
+                table: "DON_DAT_SAN",
                 column: "SanPickleballSanID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GhepCapAI_NguoiDungID",
-                table: "GhepCapAI",
+                name: "IX_LICH_SU_CHAT_NguoiDungID",
+                table: "LICH_SU_CHAT",
                 column: "NguoiDungID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LichSuChat_NguoiDungID",
-                table: "LichSuChat",
-                column: "NguoiDungID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NguoiDung_TenDangNhap",
-                table: "NguoiDung",
+                name: "IX_NGUOI_DUNG_TenDangNhap",
+                table: "NGUOI_DUNG",
                 column: "TenDangNhap",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SanPickleball_ChiNhanhID",
-                table: "SanPickleball",
+                name: "IX_SAN_PICKLEBALL_ChiNhanhID",
+                table: "SAN_PICKLEBALL",
                 column: "ChiNhanhID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SanPickleball_TenSan_ChiNhanhID",
-                table: "SanPickleball",
+                name: "IX_SAN_PICKLEBALL_TenSan_ChiNhanhID",
+                table: "SAN_PICKLEBALL",
                 columns: new[] { "TenSan", "ChiNhanhID" },
-                unique: true,
-                filter: "[ChiNhanhID] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ThanhToan_DonDatSanID",
-                table: "ThanhToan",
+                name: "IX_THANH_TOAN_DonDatSanID",
+                table: "THANH_TOAN",
                 column: "DonDatSanID");
         }
 
@@ -304,35 +281,31 @@ namespace Pickleball_Smash.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ChiTietDichVu");
+                name: "CHI_TIET_DICH_VU");
 
             migrationBuilder.DropTable(
-                name: "DanhGia");
+                name: "DANH_GIA");
 
             migrationBuilder.DropTable(
-                name: "GhepCapAI");
+                name: "LICH_SU_CHAT");
 
             migrationBuilder.DropTable(
-                name: "LichSuChat");
+                name: "THANH_TOAN");
 
             migrationBuilder.DropTable(
-                name: "ThanhToan");
+                name: "DICH_VU_PHU_TRO");
 
             migrationBuilder.DropTable(
-                name: "DichVuPhuTro");
+                name: "DON_DAT_SAN");
 
             migrationBuilder.DropTable(
-                name: "DonDatSan");
+                name: "NGUOI_DUNG");
 
             migrationBuilder.DropTable(
-                name: "NguoiDung");
+                name: "SAN_PICKLEBALL");
 
             migrationBuilder.DropTable(
-                name: "SanPickleball");
-
-            migrationBuilder.DropTable(
-                name: "ChiNhanh");
+                name: "CHI_NHANH");
         }
     }
 }
-
