@@ -15,7 +15,6 @@
         // Navigation properties
         public ICollection<DonDatSan>? DonDatSans { get; set; }
         public ICollection<DanhGia>? DanhGias { get; set; }
-        public ICollection<GhepCapAI>? GhepCapAIs { get; set; }
         public ICollection<LichSuChat>? LichSuChats { get; set; }
     }
 }

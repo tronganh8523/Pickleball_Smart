@@ -5,8 +5,9 @@
         public int DonDatSanID { get; set; }
         public int? NguoiDungID { get; set; }
         public int? SanID { get; set; }
-        public DateTime NgayChoi { get; set; }
-        public string KhungGio { get; set; } = null!;
+        public DateOnly NgayChoi { get; set; }
+        public TimeOnly ThoiGianBatDau { get; set; }
+        public TimeOnly ThoiGianKetThuc { get; set; }
         public decimal? TongTien { get; set; }
         public string? TrangThaiDon { get; set; }
         public DateTime NgayTao { get; set; }
