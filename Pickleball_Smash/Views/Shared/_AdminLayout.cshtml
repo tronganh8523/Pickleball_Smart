@@ -5,87 +5,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pickleball Smash Admin</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/css/admin-style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+            :root {
+                --sidebar-width: 260px;
+                --primary-color: #4e73df;
+                --dark-bg: #1a1c23;
+                --light-bg: #f8f9fc;
+            }
+
+            /* THAY ĐỔI CHÍNH: Cho phép toàn bộ trang cuộn tự nhiên */
+            html,
+            body {
+                height: auto;
+                min-height: 100%;
+                background-color: var(--light-bg);
+                margin: 0;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .admin-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            /* Sidebar: Không dùng fixed để nó có thể dài ra cùng content */
+            #sidebar {
+                width: var(--sidebar-width);
+                min-width: var(--sidebar-width);
+                background: var(--dark-bg);
+                color: #fff;
+                transition: all 0.3s;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #sidebar .sidebar-header {
+                padding: 20px;
+                background: rgba(0, 0, 0, 0.2);
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            #sidebar .nav-link {
+                color: rgba(255, 255, 255, 0.7);
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                transition: 0.2s;
+                text-decoration: none;
+            }
+
+            #sidebar .nav-link:hover,
+            #sidebar .nav-link.active {
+                color: #fff;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            #sidebar .nav-link.active {
+                border-left: 4px solid var(--primary-color);
+            }
+
+            #sidebar .nav-link i {
+                margin-right: 12px;
+                width: 20px;
+                text-align: center;
+            }
+
+            .sidebar-heading {
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 1.2px;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.4) !important;
+                padding: 25px 20px 10px;
+            }
+
+            /* Content Area */
+            #content {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                background-color: var(--light-bg);
+                width: 100%;
+            }
+
+            .topbar {
+                background: #fff;
+                height: 70px;
+                display: flex;
+                align-items: center;
+                padding: 0 25px;
+                box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+            }
+
+            /* Mobile Responsive */
+            @@media (max-width: 768px) {
+                #sidebar {
+                    margin-left: calc(-1 * var(--sidebar-width));
+                    position: fixed;
+                    /* Trên mobile thì để fixed để hiện đè lên */
+                    height: 100vh;
+                    z-index: 1050;
+                }
+                #sidebar.active {
+                    margin-left: 0;
+                }
+            }
+    </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-dark bg-dark sticky-top">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">
-                <i class="fas fa-badminton-racquet"></i> Pickleball Smash - Admin
-            </span>
-            <div class="d-flex align-items-center">
-                <span class="text-light me-3">Quản Trị Viên</span>
-                <button class="btn btn-outline-light btn-sm">Đăng Xuất</button>
+    @{
+        var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+        var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    }
+
+    <div class="admin-wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h5 class="mb-0 fw-bold text-white d-flex align-items-center justify-content-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="currentColor" class="me-2">
+                        <path
+                        d="M15.5 2H8.5C6.57 2 5 3.57 5 5.5V13.5C5 15.43 6.57 17 8.5 17H10V22H14V17H15.5C17.43 17 19 15.43 19 13.5V5.5C19 3.57 17.43 2 15.5 2ZM17 13.5C17 14.33 16.33 15 15.5 15H8.5C7.67 15 7 14.33 7 13.5V5.5C7 4.67 7.67 4 8.5 4H15.5C16.33 4 17 4.67 17 5.5V13.5Z" />
+                    </svg>
+                    Admin Dashboard
+                </h5>
             </div>
-        </div>
-    </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-2 d-md-block bd-light bg-danger-light sidebar">
-                <div class="position-sticky pt-3">
-                    <!-- Main Menu -->
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        <span>MENU CHÍNH</span>
-                    </h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Dashboard", "Admin")">
-                                <i class="fas fa-tachometer-alt"></i> Bảng Điều Khiển
-                            </a>
-                        </li>
-                    </ul>
+            <div class="sidebar-content">
+                <h6 class="sidebar-heading">Bảng điều khiển</h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(currentAction == "Dashboard" ? "active" : "")"
+                               href="@Url.Action("Dashboard", "Admin")">
+                            <i class="fas fa-chart-line"></i> Thống Kê Chung
+                        </a>
+                    </li>
+                </ul>
 
-                    <!-- Cấu Hình -->
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        <span>CẤU HÌNH</span>
-                    </h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("ChiNhanhIndex", "Admin")">
-                                <i class="fas fa-building"></i> Quản Lý Chi Nhánh
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Index", "AdminSan")">
-                                <i class="fas fa-store"></i> Quản Lý Sân
-                            </a>
-                        </li>
-                    </ul>
+                <h6 class="sidebar-heading">Quản lý cơ sở</h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(currentAction == "ChiNhanhIndex" ? "active" : "")"
+                               href="@Url.Action("ChiNhanhIndex", "Admin")">
+                            <i class="fas fa-map-marker-alt"></i> Chi Nhánh
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "AdminSan" ? "active" : "")"
+                               href="@Url.Action("Index", "AdminSan")">
+                            <i class="fas fa-th-large"></i> Danh Sách Sân
+                        </a>
+                    </li>
+                </ul>
 
-                    <!-- Khác -->
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        <span>KHÁC</span>
-                    </h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Index", "Home")">
-                                <i class="fas fa-arrow-left"></i> Về Trang Chủ
-                            </a>
-                        </li>
-                    </ul>
+                <h6 class="sidebar-heading">Quản trị viên</h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "AdminUser" ? "active" : "")" href="#">
+                            <i class="fas fa-users-cog"></i> Quản Lý Tài Khoản
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading">Hệ thống</h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
+                            <i class="fas fa-arrow-left"></i> Quay lại Website
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="#">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="content">
+            <header class="topbar d-flex justify-content-between align-items-center">
+                <button type="button" id="sidebarCollapse" class="btn btn-link d-md-none text-dark">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="h5 mb-0 text-gray-800 d-none d-sm-block ps-3">Pickleball Smash</h4>
+
+                <div class="user-info pe-3">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle text-dark fw-600" href="#" data-bs-toggle="dropdown">
+                            <img class="rounded-circle border"
+                                 src="https://ui-avatars.com/api/?name=Admin&background=4e73df&color=fff" width="35"
+                                 height="35">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                            <li><a class="dropdown-item" href="#">Đổi mật khẩu</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="#">Đăng xuất</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </nav>
+            </header>
 
-            <!-- Main Content -->
-            <main class="col-md-10 ms-sm-auto px-md-4">
+            <main class="container-fluid p-4">
                 @RenderBody()
             </main>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery (optional) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>
 
+</html>
