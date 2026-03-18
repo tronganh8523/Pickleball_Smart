@@ -9,8 +9,8 @@
         public string? HoTen { get; set; }
         public string? GioiTinh { get; set; }
         public string? SDT { get; set; }
-        public string VaiTro { get; set; } = "User";
-        public DateTime NgayTao { get; set; }
+        public string? VaiTro { get; set; }
+        public DateTime? NgayTao { get; set; }
 
         // Navigation properties
         public ICollection<DonDatSan>? DonDatSans { get; set; }

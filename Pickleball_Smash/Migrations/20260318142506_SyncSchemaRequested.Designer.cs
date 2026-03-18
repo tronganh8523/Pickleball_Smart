@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pickleball_Smash.Data;
 
@@ -11,9 +12,11 @@ using Pickleball_Smash.Data;
 namespace Pickleball_Smash.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318142506_SyncSchemaRequested")]
+    partial class SyncSchemaRequested
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,7 +89,7 @@ namespace Pickleball_Smash.Migrations
                     b.Property<string>("BinhLuan")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("NgayDanhGia")
+                    b.Property<DateTime>("NgayDanhGia")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
@@ -97,7 +100,7 @@ namespace Pickleball_Smash.Migrations
                     b.Property<int?>("SanID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SoSao")
+                    b.Property<int>("SoSao")
                         .HasColumnType("int");
 
                     b.HasKey("DanhGiaID");
@@ -128,6 +131,7 @@ namespace Pickleball_Smash.Migrations
                         .HasColumnType("NVARCHAR(50)");
 
                     b.Property<string>("TenDichVu")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(100)");
 
                     b.HasKey("DichVuID");
@@ -143,10 +147,10 @@ namespace Pickleball_Smash.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DonDatSanID"));
 
-                    b.Property<DateOnly?>("NgayChoi")
+                    b.Property<DateOnly>("NgayChoi")
                         .HasColumnType("date");
 
-                    b.Property<DateTime?>("NgayTao")
+                    b.Property<DateTime>("NgayTao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
@@ -163,10 +167,10 @@ namespace Pickleball_Smash.Migrations
                         .HasColumnType("decimal(18,2)")
                         .HasDefaultValue(0m);
 
-                    b.Property<TimeOnly?>("ThoiGianBatDau")
+                    b.Property<TimeOnly>("ThoiGianBatDau")
                         .HasColumnType("time");
 
-                    b.Property<TimeOnly?>("ThoiGianKetThuc")
+                    b.Property<TimeOnly>("ThoiGianKetThuc")
                         .HasColumnType("time");
 
                     b.Property<decimal?>("TongTien")
@@ -207,7 +211,7 @@ namespace Pickleball_Smash.Migrations
                     b.Property<string>("PhanHoiAI")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ThoiGian")
+                    b.Property<DateTime>("ThoiGian")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
@@ -240,7 +244,7 @@ namespace Pickleball_Smash.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(255)");
 
-                    b.Property<DateTime?>("NgayTao")
+                    b.Property<DateTime>("NgayTao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
@@ -311,7 +315,7 @@ namespace Pickleball_Smash.Migrations
                     b.Property<string>("MaGiaoDich")
                         .HasColumnType("VARCHAR(100)");
 
-                    b.Property<DateTime?>("NgayThanhToan")
+                    b.Property<DateTime>("NgayThanhToan")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
@@ -380,7 +384,7 @@ namespace Pickleball_Smash.Migrations
                     b.Property<string>("TrangThai")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("NVARCHAR(50)")
-                        .HasDefaultValue("Hoạt động");
+                        .HasDefaultValue("Hoat dong");
 
                     b.HasKey("VoucherID");
 

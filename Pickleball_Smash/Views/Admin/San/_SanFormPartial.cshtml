@@ -1,12 +1,12 @@
 @model Pickleball_Smash.Models.SanPickleball
 
 <div class="mb-3">
-    <label asp-for="TenSan" class="form-label"></label>
+    <label asp-for="TenSan" class="form-label">Tên sân</label>
     <input asp-for="TenSan" class="form-control" />
     <span asp-validation-for="TenSan" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="LoaiSan" class="form-label"></label>
+    <label asp-for="LoaiSan" class="form-label">Loại sân</label>
     <select asp-for="LoaiSan" class="form-select">
         <option value="">-- chọn --</option>
         <option value="Trong nhà">Trong nhà</option>
@@ -15,17 +15,17 @@
     <span asp-validation-for="LoaiSan" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="MoTa" class="form-label"></label>
+    <label asp-for="MoTa" class="form-label">Mô tả</label>
     <textarea asp-for="MoTa" class="form-control"></textarea>
     <span asp-validation-for="MoTa" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="GiaCoBan" class="form-label"></label>
+    <label asp-for="GiaCoBan" class="form-label">Giá cơ bản</label>
     <input asp-for="GiaCoBan" class="form-control" type="number" step="0.01" />
     <span asp-validation-for="GiaCoBan" class="text-danger"></span>
 </div>
 <div class="mb-3">
-    <label asp-for="TrangThai" class="form-label"></label>
+    <label asp-for="TrangThai" class="form-label">Trạng thái</label>
     <select asp-for="TrangThai" class="form-select">
         <option value="">-- chọn --</option>
         <option value="Mở">Mở</option>

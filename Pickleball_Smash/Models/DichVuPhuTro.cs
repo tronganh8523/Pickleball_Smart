@@ -3,7 +3,7 @@
     public class DichVuPhuTro
     {
         public int DichVuID { get; set; }
-        public string TenDichVu { get; set; } = null!;
+        public string? TenDichVu { get; set; }
         public string? LoaiDichVu { get; set; }
         public decimal? Gia { get; set; }
 

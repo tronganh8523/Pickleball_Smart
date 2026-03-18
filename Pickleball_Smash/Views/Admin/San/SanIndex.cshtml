@@ -43,7 +43,7 @@
                                 <td>@item.TenSan</td>
                                 <td>@item.ChiNhanh?.TenChiNhanh</td>
                                 <td>@item.LoaiSan</td>
-                                <td>@item.GiaCoBan.ToString("F0")</td>
+                                <td>@(item.GiaCoBan?.ToString("F0") ?? "")</td>
                                 <td>@item.TrangThai</td>
                                 <td>
                                     <a asp-controller="AdminSan" asp-action="Edit" asp-route-id="@item.SanID" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
