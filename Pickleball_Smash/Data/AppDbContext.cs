@@ -110,7 +110,7 @@ namespace Pickleball_Smash.Data
             modelBuilder.Entity<Voucher>()
                 .Property(e => e.SoLuongDaDung).HasDefaultValue(0);
             modelBuilder.Entity<Voucher>()
-                .Property(e => e.TrangThai).HasColumnType("NVARCHAR(50)").HasDefaultValue("Hoạt động");
+                .Property(e => e.TrangThai).HasColumnType("NVARCHAR(50)");
 
             // DON_DAT_SAN
             modelBuilder.Entity<DonDatSan>().HasKey(e => e.DonDatSanID);

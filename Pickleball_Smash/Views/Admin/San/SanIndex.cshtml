@@ -19,7 +19,9 @@
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
     }
 
     <div class="card shadow mb-4">
@@ -37,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(var item in Model)
+                        @foreach (var item in Model)
                         {
                             <tr>
                                 <td>@item.TenSan</td>

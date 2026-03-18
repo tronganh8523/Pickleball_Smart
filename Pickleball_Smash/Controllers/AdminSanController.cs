@@ -36,12 +36,17 @@ namespace Pickleball_Smash.Controllers
         public async Task<IActionResult> Create([Bind("TenSan,LoaiSan,MoTa,GiaCoBan,TrangThai,ChiNhanhID")] SanPickleball san)
         {
             // duplicate name within branch
-            var exist = await _context.SanPickleball
-                .FirstOrDefaultAsync(x => x.TenSan.ToLower() == san.TenSan.ToLower()
-                    && x.ChiNhanhID == san.ChiNhanhID);
-            if (exist != null)
+            if (!string.IsNullOrWhiteSpace(san.TenSan))
             {
-                ModelState.AddModelError("TenSan", "Tên sân đã tồn tại trong chi nhánh này.");
+                var tenSan = san.TenSan.Trim().ToLower();
+                var exist = await _context.SanPickleball
+                    .FirstOrDefaultAsync(x => x.TenSan != null
+                        && x.TenSan.ToLower() == tenSan
+                        && x.ChiNhanhID == san.ChiNhanhID);
+                if (exist != null)
+                {
+                    ModelState.AddModelError("TenSan", "Tên sân đã tồn tại trong chi nhánh này.");
+                }
             }
 
             if (ModelState.IsValid)
@@ -71,12 +76,18 @@ namespace Pickleball_Smash.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("SanID,TenSan,LoaiSan,MoTa,GiaCoBan,TrangThai,ChiNhanhID")] SanPickleball san)
         {
             if (id != san.SanID) return NotFound();
-            var exist = await _context.SanPickleball
-                .FirstOrDefaultAsync(x => x.TenSan.ToLower()==san.TenSan.ToLower()
-                    && x.ChiNhanhID==san.ChiNhanhID && x.SanID!=san.SanID);
-            if(exist!=null)
+            if (!string.IsNullOrWhiteSpace(san.TenSan))
             {
-                ModelState.AddModelError("TenSan","Tên sân đã tồn tại trong chi nhánh này.");
+                var tenSan = san.TenSan.Trim().ToLower();
+                var exist = await _context.SanPickleball
+                    .FirstOrDefaultAsync(x => x.TenSan != null
+                        && x.TenSan.ToLower() == tenSan
+                        && x.ChiNhanhID == san.ChiNhanhID
+                        && x.SanID != san.SanID);
+                if (exist != null)
+                {
+                    ModelState.AddModelError("TenSan", "Tên sân đã tồn tại trong chi nhánh này.");
+                }
             }
 
             if (ModelState.IsValid)
